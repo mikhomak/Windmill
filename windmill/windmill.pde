@@ -19,6 +19,16 @@ void draw(){
   for(PVector point : points){
     point(point.x, point.y);
   }
+  drawLines();
+}
+
+void drawLines(){
+  strokeWeight(1);
+  for(PVector point : points){
+    for(PVector secondPoint: points){
+      line(point.x, point.y, secondPoint.x, secondPoint.y);
+    }
+  }
 }
 
 void checkPoints(){
