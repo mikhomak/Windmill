@@ -4,6 +4,8 @@ int minPos = 30;
 int maxPos = 370;
 int amountPoints = 13;
 PVector[] points = new PVector[amountPoints];
+float angle;
+float jitter=0.1;
 
 void setup(){
   size(400, 400);
@@ -14,15 +16,37 @@ void setup(){
 }
 
 void draw(){
+  background(51);
   color(50, 50, 50);
   strokeWeight(10);
   for(PVector point : points){
     point(point.x, point.y);
   }
-  drawLines();
+  drawWindmillLine();
 }
 
+
+
+
+void drawWindmillLine(){
+  strokeWeight(1);
+ 
+  /*angle = angle + jitter;
+  float c = cos(angle);
+  rotate(c);*/
+  pushMatrix();
+  translate(width/2, height/2);
+  float radius = width/2;
+  float x = radius*cos(radians(30));
+  float y = radius*sin(radians(30));
+
+
+  line(0,0,400,400);
+}
+
+
 void drawLines(){
+  color(255,0,0);
   strokeWeight(1);
   for(PVector point : points){
     for(PVector secondPoint: points){
