@@ -1,28 +1,33 @@
 
 
 int minPos = 30;
-int maxPos = 370;
-int amountPoints = 13;
+int maxPos;
+int amountPoints = 29;
 PVector[] points = new PVector[amountPoints];
-float angle;
-float jitter=0.1;
-
+float speed = 0.05f;
+PVector pivot;
+PVector line = new PVector();
+color blue = color(20,20,180);
 void setup(){
-  size(400, 400);
+  size(800, 800);
+  maxPos = width - minPos;
   for(int i = 0; i < amountPoints; i++){
     points[i] = new PVector(random(minPos,maxPos),random(minPos,maxPos));
   }
   checkPoints();
+  pivot = points[0];
+
 }
 
 void draw(){
-  background(51);
-  color(50, 50, 50);
+  background(200);
+  translate(0,0);
   strokeWeight(10);
   for(PVector point : points){
     point(point.x, point.y);
   }
   drawWindmillLine();
+
 }
 
 
@@ -30,20 +35,31 @@ void draw(){
 
 void drawWindmillLine(){
   strokeWeight(1);
- 
-  /*angle = angle + jitter;
-  float c = cos(angle);
-  rotate(c);*/
+  
   pushMatrix();
-  translate(width/2, height/2);
-  float radius = width/2;
-  float x = radius*cos(radians(30));
-  float y = radius*sin(radians(30));
-
-
-  line(0,0,400,400);
+  translate(pivot.x, pivot.y);
+  float radius = width;
+  line.x = radius;
+  line.y = radius;
+  line.rotate(frameCount * speed  % 360);
+  line(-line.x, -line.y, line.x, line.y);
+  
+  popMatrix();
+  findPivot();
+   
 }
 
+void findPivot(){
+  for(PVector point : points){
+    if(checkPointOnTheLine(pivot, new PVector(line.x + pivot.x, line.y + pivot.y), point)){
+      pivot = point;
+      return;
+    }
+    if(checkPointOnTheLine(pivot, new PVector(-line.x + pivot.x, -line.y + pivot.y) , point)){
+      pivot = point;
+    }
+  }
+}
 
 void drawLines(){
   color(255,0,0);
@@ -74,12 +90,14 @@ void checkPoints(){
 }
 
 boolean checkPointOnTheLine(PVector point1, PVector point2, PVector point3){
-  float dxc = point1.x - point2.x;
-  float dyc = point1.y - point2.y;
+  if(point1.equals(point3) || point2.equals(point3)){
+    return false;
+  }
+  float dis1 = dist(point1.x,point1.y,point2.x,point2.y);
+  float dis2 = dist(point1.x,point1.y,point3.x,point3.y);
+  float dis3 = dist(point2.x,point2.y,point3.x,point3.y);
+  float dis = dis1-dis2-dis3;
+  println(dis);
+  return  dis < 0.5 && dis > -0.5;
   
-  float dx1 = point2.x - point3.x;
-  float dy1 = point2.y - point3.y;
-  
-  float cross = dxc * dy1 - dyc * dx1;
-  return cross == 0;
 }
