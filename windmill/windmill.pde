@@ -2,14 +2,14 @@
 
 int minPos = 30;
 int maxPos;
-int amountPoints = 29;
+int amountPoints = 13;
 PVector[] points = new PVector[amountPoints];
 float speed = 0.05f;
 PVector pivot;
 PVector line = new PVector();
 color blue = color(20,20,180);
 void setup(){
-  size(800, 800);
+  size(500, 500);
   maxPos = width - minPos;
   for(int i = 0; i < amountPoints; i++){
     points[i] = new PVector(random(minPos,maxPos),random(minPos,maxPos));
@@ -50,8 +50,10 @@ void drawWindmillLine(){
 }
 
 void findPivot(){
+  
   for(PVector point : points){
     if(checkPointOnTheLine(pivot, new PVector(line.x + pivot.x, line.y + pivot.y), point)){
+      
       pivot = point;
       return;
     }
