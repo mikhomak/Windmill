@@ -46,8 +46,8 @@ void drawWindmillLine(){
   line.rotate(frameCount * speed  % 360);
   fill(lineColour);
   line(-line.x, -line.y, line.x, line.y);
-  strokeWeight(120);
-  fill(pivotColour);
+  strokeWeight(12);
+  stroke(pivotColour);
   point(0,0);
   fill(rectColour);
   noStroke();
