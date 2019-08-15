@@ -7,10 +7,12 @@ final wmPoint[] points = new wmPoint[amountPoints];
 final float speed = 0.05f;
 wmPoint pivot;
 PVector line = new PVector();
-final color blue = color(20,20,180);
+final color rectColour = color(79,200,229, 125);
+final color lineColour = color(#E813CC);
+final color bcakgroundColour = color(#E813CC);
 
 void setup(){
-  size(500, 500);
+  size(800, 800);
   maxPos = width - minPos;
   for(int i = 0; i < amountPoints; i++){
     points[i] = new wmPoint(random(minPos,maxPos),random(minPos,maxPos));
@@ -21,13 +23,14 @@ void setup(){
 }
 
 void draw(){
-  background(200);
+  background(252,246,235);
   translate(0,0);
   strokeWeight(10);
   for(wmPoint point : points){
     point(point.x, point.y);
   }
   drawWindmillLine();
+  drawPivotNumbers();
 }
 
 
@@ -42,9 +45,16 @@ void drawWindmillLine(){
   line.x = radius;
   line.y = radius;
   line.rotate(frameCount * speed  % 360);
+  fill(lineColour);
   line(-line.x, -line.y, line.x, line.y);
-  
+  final PVector topPoint = findTopPointForTriangle(line, new PVector(-line.x, -line.y));
+  fill(rectColour);
+  noStroke();
+  quad(0, 0, line.x, line.y, line.x, line.y* 200, topPoint.x, topPoint.y);
+  quad(0, 0, -line.x, -line.y, -line.x, -line.y* 200, topPoint.x, topPoint.y);
+  stroke(1);
   popMatrix();
+  
   findPivot();
    
 }
@@ -65,6 +75,31 @@ void findPivot(){
     pivot = distMap.get(str(distances.min()));
     distMap.get(str(distances.min())).addToPivotNumber();
   }
+}
+
+void drawPivotNumbers(){
+  for(wmPoint point : points){
+     pushMatrix();
+     fill(0);
+     translate(point.x, point.y);
+     text(int(point.getPivotNumber()), 15, -15);
+     popMatrix();
+  }
+}
+
+PVector findTopPointForTriangle(PVector point1, PVector point2){
+  if(point1.y > point2.y){
+    if(point1.x < point2.x){
+      return new PVector(point2.x, point1.y);
+    }
+    return new PVector(point1.x, point2.y); 
+  }else if(point2.y > point1.y){
+    if(point1.x < point2.x){
+      return new PVector(point1.x, point2.y);
+    }
+    return new PVector(point2.x, point1.y);
+  }
+  return new PVector(0,0);
 }
 
 void createPoints(){
